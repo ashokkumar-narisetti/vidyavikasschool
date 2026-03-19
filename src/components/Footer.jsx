@@ -1,9 +1,13 @@
 import { useNavigate } from 'react-router-dom';
-import { GraduationCap, MapPin, Phone, Mail, Facebook, Youtube, Instagram, Twitter, ChevronRight } from 'lucide-react';
+import { Facebook, GraduationCap, Instagram, Mail, MapPin, Phone, Twitter, Youtube, ChevronRight } from 'lucide-react';
+
+const SCHOOL_ADDRESS = 'Teachers Colony, Satyanarayanapuram, Gudivada, Andhra Pradesh,521301,India';
+const SCHOOL_MAP_URL = 'https://www.google.com/maps/search/?api=1&query=Vidya+Vikas+School+Gudivada+Andhra+Pradesh';
 
 const quickLinks = [
     { label: 'Home', path: '/' },
     { label: 'About Us', path: '/about' },
+    { label: 'Founder', path: '/founder' },
     { label: 'Academics', path: '/academics' },
     { label: 'Admissions', path: '/admissions' },
     { label: 'Gallery', path: '/gallery' },
@@ -22,7 +26,6 @@ export default function Footer() {
         <footer className="footer">
             <div className="container">
                 <div className="footer-grid">
-                    {/* Brand */}
                     <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
                             <div style={{
@@ -41,7 +44,7 @@ export default function Footer() {
                                 lineHeight: 1.1,
                             }}>VIDYAVIKAS</div>
                         </div>
-                        <div className="footer-brand-tag">[E.M] Blooms, Primary &amp; High School – Gudivada</div>
+                        <div className="footer-brand-tag">[E.M] Blooms, Primary &amp; High School - Gudivada</div>
                         <p className="footer-desc">
                             Committed to nurturing young minds with academic excellence, character building,
                             and holistic development in a safe and inspiring environment.
@@ -54,7 +57,6 @@ export default function Footer() {
                         </div>
                     </div>
 
-                    {/* Quick Links */}
                     <div>
                         <div className="footer-heading">Quick Links</div>
                         <div className="footer-links">
@@ -67,13 +69,22 @@ export default function Footer() {
                         </div>
                     </div>
 
-                    {/* Contact */}
                     <div>
                         <div className="footer-heading">Contact Us</div>
                         <p className="footer-contact-item" style={{ display: 'flex', gap: 8 }}>
                             <MapPin size={16} style={{ flexShrink: 0, marginTop: 2 }} />
-                            Teacher Colony,<br />Satyanarayana Puram, Gudivada – 521301<br />Andhra Pradesh, India
+                            {SCHOOL_ADDRESS}
                         </p>
+                        <a
+                            href={SCHOOL_MAP_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="footer-link"
+                            style={{ marginBottom: 12 }}
+                        >
+                            <ChevronRight size={14} />
+                            Open in Google Maps
+                        </a>
                         <p className="footer-contact-item" style={{ display: 'flex', gap: 8 }}>
                             <Phone size={16} style={{ flexShrink: 0, marginTop: 2 }} />
                             +91 7386640005<br />+91 8142712666
@@ -83,16 +94,16 @@ export default function Footer() {
                             vidyavikas@gmail.com
                         </p>
                         <p className="footer-contact-item" style={{ marginTop: 4, fontSize: 12 }}>
-                            🕐 Mon–Sat: 8:00 AM – 4:00 PM<br />Office: 9:00 AM – 5:00 PM
+                            Mon-Sat: 8:00 AM - 4:00 PM<br />Office: 9:00 AM - 5:00 PM
                         </p>
                     </div>
                 </div>
 
                 <div className="footer-bottom">
                     <p className="footer-copy">
-                        © 2025 Vidya Vikas Blooms School, Gudivada. All rights reserved. | Designed with ❤️ for educational excellence.
+                        � 2025 Vidya Vikas Blooms School, Gudivada. All rights reserved. | Designed for educational excellence.
                     </p>
-                    <div className="demo-watermark">⚠ Demo Version</div>
+                    <div className="demo-watermark">Demo Version</div>
                 </div>
             </div>
         </footer>

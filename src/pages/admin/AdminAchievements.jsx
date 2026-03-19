@@ -139,7 +139,7 @@ export default function AdminAchievements() {
                                 value={form.description}
                                 onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
                         </div>
-                        <div style={{ display: 'flex', gap: 12 }}>
+                        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                             <button type="submit" className="admin-btn-primary" disabled={saving}>
                                 {saving ? 'Saving...' : (editing ? 'Update Achievement' : 'Save Achievement')}
                             </button>

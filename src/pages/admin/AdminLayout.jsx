@@ -72,6 +72,7 @@ export default function AdminLayout() {
                     <button
                         className="admin-hamburger"
                         onClick={() => setSidebarOpen(!sidebarOpen)}
+                        aria-label={sidebarOpen ? 'Close admin menu' : 'Open admin menu'}
                     >
                         {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
                     </button>

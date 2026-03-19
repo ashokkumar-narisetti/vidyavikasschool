@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import About from './pages/About';
+import Founder from './pages/Founder';
 import Academics from './pages/Academics';
 import Admissions from './pages/Admissions';
 import Gallery from './pages/Gallery';
@@ -27,6 +28,7 @@ export default function App() {
           {/* Public routes */}
           <Route path="/" element={<><Navbar /><Home /><Footer /></>} />
           <Route path="/about" element={<><Navbar /><About /><Footer /></>} />
+          <Route path="/founder" element={<><Navbar /><Founder /><Footer /></>} />
           <Route path="/academics" element={<><Navbar /><Academics /><Footer /></>} />
           <Route path="/admissions" element={<><Navbar /><Admissions /><Footer /></>} />
           <Route path="/gallery" element={<><Navbar /><Gallery /><Footer /></>} />

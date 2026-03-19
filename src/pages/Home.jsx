@@ -7,6 +7,11 @@ import {
     MapPin, Phone, Mail, Clock, Medal, Microscope, Award, ChevronLeft, X
 } from 'lucide-react';
 
+const SCHOOL_ADDRESS_LINE_1 = 'Teachers Colony, Satyanarayanapuram,';
+const SCHOOL_ADDRESS_LINE_2 = 'Gudivada, Andhra Pradesh,521301,India';
+const SCHOOL_MAP_URL = 'https://www.google.com/maps/search/?api=1&query=Vidya+Vikas+School+Gudivada+Andhra+Pradesh';
+
+
 /* ── SVG Illustrations ── */
 const StudentSVG = () => (
     <svg viewBox="0 0 300 400" fill="none" xmlns="http://www.w3.org/2000/svg" className="hero-student-svg">
@@ -686,7 +691,7 @@ export default function Home() {
                                     <div className="contact-icon"><MapPin size={20} /></div>
                                     <div className="contact-detail">
                                         <h4>School Address</h4>
-                                        <p>Teacher Colony,<br />Satyanarayana Puram, Gudivada – 521301<br />Andhra Pradesh, India</p>
+                                        <p>Teachers Colony,<br />Satyanarayanapuram,<br />Gudivada, Andhra Pradesh,521301,India</p>
                                     </div>
                                 </div>
                                 <div className="contact-item">
@@ -719,14 +724,20 @@ export default function Home() {
                                 <div className="map-icon">📍</div>
                                 <div style={{ fontWeight: 700, fontSize: 16, color: 'var(--primary)' }}>Vidya Vikas School</div>
                                 <div style={{ fontSize: 13, color: 'var(--text-light)', textAlign: 'center', padding: '0 24px' }}>
-                                    Satyanarayana Puram, Gudivada – 521301<br />Andhra Pradesh, India
+                                    {SCHOOL_ADDRESS_LINE_1}<br />{SCHOOL_ADDRESS_LINE_2}
                                 </div>
-                                <div style={{
-                                    background: 'var(--primary)', color: 'white', padding: '10px 20px',
-                                    borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', marginTop: 8
-                                }}>
-                                    Open in Google Maps ↗
-                                </div>
+                                <a
+                                    href={SCHOOL_MAP_URL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{
+                                        background: 'var(--primary)', color: 'white', padding: '10px 20px',
+                                        borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                                        marginTop: 8, textDecoration: 'none'
+                                    }}
+                                >
+                                    Open in Google Maps
+                                </a>
                             </div>
                             <div style={{ marginTop: 28 }}>
                                 <button className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', marginBottom: 12 }} onClick={() => go('/contact')}>
@@ -743,4 +754,8 @@ export default function Home() {
         </main>
     );
 }
+
+
+
+
 

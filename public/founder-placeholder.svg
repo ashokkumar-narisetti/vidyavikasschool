@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 760" role="img" aria-label="Founder placeholder portrait">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f2e6d7"/>
+      <stop offset="100%" stop-color="#e6d1b8"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7b2d35"/>
+      <stop offset="100%" stop-color="#8b5e3c"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="760" fill="url(#bg)"/>
+  <circle cx="320" cy="250" r="124" fill="#f7efe6" stroke="#8b5e3c" stroke-width="8"/>
+  <circle cx="320" cy="222" r="54" fill="#8b5e3c"/>
+  <rect x="220" y="300" width="200" height="160" rx="90" fill="#8b5e3c"/>
+  <rect x="72" y="500" width="496" height="190" rx="24" fill="url(#card)"/>
+  <text x="320" y="572" text-anchor="middle" font-size="38" font-family="Poppins, Arial, sans-serif" font-weight="700" fill="#ffffff">Muppala Subbarao</text>
+  <text x="320" y="618" text-anchor="middle" font-size="26" font-family="Poppins, Arial, sans-serif" font-weight="600" fill="#f9dfc2">Founder and Chairman</text>
+  <text x="320" y="656" text-anchor="middle" font-size="22" font-family="Poppins, Arial, sans-serif" font-weight="500" fill="#ffe9d0">Vidya Vikas School</text>
+</svg>

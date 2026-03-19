@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const navItems = [
     { label: 'Home', path: '/' },
     { label: 'About Us', path: '/about' },
+    { label: 'Founder', path: '/founder' },
     { label: 'Academics', path: '/academics' },
     { label: 'Admissions', path: '/admissions' },
     { label: 'Gallery', path: '/gallery' },
@@ -108,6 +109,9 @@ export default function Navbar() {
                     ))}
                     <div className="mobile-admit-btn" onClick={() => handleNav('/admissions')}>
                         Apply for Admission
+                    </div>
+                    <div className="mobile-admin-btn" onClick={() => handleNav('/admin-login')}>
+                        Admin Login
                     </div>
                 </div>
             </div>
