@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const navItems = [
     { label: 'Home', path: '/' },
@@ -48,8 +48,11 @@ export default function Navbar() {
         <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
             <div className="container">
                 <div className="navbar-inner">
-                    {/* Logo */}
-                    <div className="navbar-logo" onClick={() => handleNav('/')} style={{ cursor: 'pointer' }}>
+                    <div
+                        className="navbar-logo"
+                        onClick={() => handleNav('/')}
+                        style={{ cursor: 'pointer' }}
+                    >
                         <div className="logo-icon">
                             <img
                                 src="/vidyavikaslogo.jpeg"
@@ -63,29 +66,11 @@ export default function Navbar() {
                             />
                         </div>
                         <div className="logo-text">
-                            <div style={{
-                                fontFamily: '"Black Ops One", cursive',
-                                fontSize: '22px',
-                                fontWeight: 400,
-                                letterSpacing: '1px',
-                                color: 'white',
-                                textTransform: 'uppercase',
-                                lineHeight: 1.1,
-                            }}>VIDYAVIKAS</div>
-                            <span style={{
-                                fontFamily: 'var(--font)',
-                                fontSize: '10px',
-                                fontWeight: 600,
-                                letterSpacing: '0.5px',
-                                color: 'var(--text-white)',
-                                textTransform: 'uppercase',
-                                display: 'block',
-                                marginTop: 3,
-                            }}>[E.M] Blooms, Primary &amp; High School – Gudivada</span>
+                            <div className="logo-title">VIDYAVIKAS</div>
+                            <span className="logo-subtitle">[E.M] Blooms, Primary &amp; High School - Gudivada</span>
                         </div>
                     </div>
 
-                    {/* Desktop Menu */}
                     <div className="navbar-menu">
                         {navItems.map((item) => (
                             <div
@@ -97,17 +82,20 @@ export default function Navbar() {
                             </div>
                         ))}
                         <div className="nav-admit-btn" onClick={() => handleNav('/admin-login')}>
-                            🔐 Admin Login
+                            Admin Login
                         </div>
                     </div>
 
-                    {/* Mobile Hamburger */}
-                    <div className="navbar-hamburger" onClick={() => setMobileOpen(!mobileOpen)}>
-                        {mobileOpen ? <X size={22} color="var(--primary)" /> : <Menu size={22} color="var(--primary)" />}
-                    </div>
+                    <button
+                        type="button"
+                        className="navbar-hamburger"
+                        onClick={() => setMobileOpen(!mobileOpen)}
+                        aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
+                    >
+                        {mobileOpen ? <X size={22} color="#ffffff" /> : <Menu size={22} color="#ffffff" />}
+                    </button>
                 </div>
 
-                {/* Mobile Menu */}
                 <div className={`mobile-menu${mobileOpen ? ' open' : ''}`}>
                     {navItems.map((item) => (
                         <div
@@ -119,7 +107,7 @@ export default function Navbar() {
                         </div>
                     ))}
                     <div className="mobile-admit-btn" onClick={() => handleNav('/admissions')}>
-                        🎓 Apply for Admission
+                        Apply for Admission
                     </div>
                 </div>
             </div>

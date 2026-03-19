@@ -163,28 +163,23 @@ export default function About() {
                         <div className="section-label">Leadership</div>
                         <h2 className="section-title">Principal's Message</h2>
                     </div>
-                    <div className="content-card" style={{ position: 'relative', borderTop: '4px solid var(--primary)' }}>
-                        <div style={{ display: 'flex', gap: 32, alignItems: 'flex-start' }}>
-                            <div style={{ flexShrink: 0, textAlign: 'center' }}>
-                                <div style={{
-                                    width: 100, height: 100, borderRadius: '50%',
-                                    background: 'linear-gradient(135deg, var(--primary), var(--accent))',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    fontSize: 40, marginBottom: 12, margin: '0 auto 12px'
-                                }}>👨‍💼</div>
-                                <div style={{ fontWeight: 700, color: 'var(--primary)', fontSize: 15 }}>Muppalla Subbarao (MSR)</div>
-                                <div style={{ fontSize: 13, color: 'var(--text-light)' }}>Principal & Director</div>
+                    <div className="content-card principal-message-card">
+                        <div className="principal-message-layout">
+                            <div className="principal-message-profile">
+                                <div className="principal-message-avatar">PR</div>
+                                <div className="principal-message-name">Muppalla Subbarao (MSR)</div>
+                                <div className="principal-message-role">Principal & Director</div>
                                 {/* <div style={{ fontSize: 12, color: 'var(--text-light)', marginTop: 4 }}>M.Ed., Ph.D. (Education)</div> */}
                             </div>
-                            <div>
-                                <p className="about-text" style={{ marginBottom: 16 }}>
-                                    "Dear Parents and Students, welcome to Vidya Vikas School — a place where dreams take shape and potential is transformed into achievement. For over two decades, we have remained steadfast in our commitment to providing an education that goes beyond textbooks.
+                            <div className="principal-message-content">
+                                <p className="about-text">
+                                    "Dear Parents and Students, welcome to Vidya Vikas School - a place where dreams take shape and potential is transformed into achievement. For over two decades, we have remained steadfast in our commitment to providing an education that goes beyond textbooks.
                                 </p>
-                                <p className="about-text" style={{ marginBottom: 16 }}>
+                                <p className="about-text">
                                     We believe that every child is unique, gifted in their own way, and deserves an environment that celebrates their individuality while nurturing their strengths. Our dedicated team of educators works tirelessly to ensure that each student receives personalized attention and the opportunity to excel.
                                 </p>
                                 <p className="about-text">
-                                    As you embark on this educational journey with us, I assure you of our unwavering dedication to your child's holistic development — academically, morally, and socially. Together, let us build a brighter future."
+                                    As you embark on this educational journey with us, I assure you of our unwavering dedication to your child's holistic development - academically, morally, and socially. Together, let us build a brighter future."
                                 </p>
                             </div>
                         </div>

@@ -188,9 +188,13 @@ export default function HomePopupBannerModal() {
     };
 
     return (
-        <div className="popup-banner-overlay open" role="presentation" onClick={handleClose}>
+        <div
+            className="fixed inset-0 z-[1400] flex items-center justify-center overflow-y-auto overscroll-contain bg-slate-950/80 p-2 backdrop-blur-md sm:p-3 md:p-4"
+            role="presentation"
+            onClick={handleClose}
+        >
             <div
-                className="popup-banner-modal open"
+                className="relative h-[88vh] w-full max-w-[96vw] overflow-hidden rounded-2xl border border-white/20 bg-slate-950 shadow-[0_30px_90px_rgba(2,6,23,0.7)] sm:h-[90vh] sm:max-w-3xl md:h-[92vh] md:max-w-5xl lg:max-w-6xl xl:max-w-7xl"
                 role="dialog"
                 aria-modal="true"
                 aria-label={activeBanner.title || 'Achievement banner'}
@@ -198,36 +202,69 @@ export default function HomePopupBannerModal() {
             >
                 <button
                     type="button"
-                    className="popup-banner-close"
+                    className="absolute right-2 top-2 z-30 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-slate-950/70 text-white backdrop-blur transition hover:scale-105 hover:bg-slate-950/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-300 sm:right-3 sm:top-3 sm:h-10 sm:w-10"
                     aria-label="Close popup"
                     onClick={handleClose}
                 >
                     <X size={18} />
                 </button>
 
-                <div className="popup-banner-media-wrap">
+                <div className="relative h-full w-full overflow-hidden bg-slate-950">
                     {hasRedirect ? (
-                        <button type="button" className="popup-banner-media-link" onClick={openRedirect}>
-                            <img src={activeBanner.image_url} alt={activeBanner.title || 'Popup banner'} loading="lazy" />
+                        <button
+                            type="button"
+                            className="block h-full w-full"
+                            onClick={openRedirect}
+                            aria-label="Open banner details"
+                        >
+                            <img
+                                src={activeBanner.image_url}
+                                alt={activeBanner.title || 'Popup banner'}
+                                loading="lazy"
+                                className="h-full w-full object-contain sm:object-cover"
+                            />
                         </button>
                     ) : (
-                        <img src={activeBanner.image_url} alt={activeBanner.title || 'Popup banner'} loading="lazy" />
+                        <img
+                            src={activeBanner.image_url}
+                            alt={activeBanner.title || 'Popup banner'}
+                            loading="lazy"
+                            className="h-full w-full object-contain sm:object-cover"
+                        />
                     )}
 
                     {banners.length > 1 && (
                         <>
-                            <button type="button" className="popup-banner-nav prev" onClick={goPrev} aria-label="Previous banner">
+                            <button
+                                type="button"
+                                className="absolute left-2 top-1/2 z-20 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-900 shadow-lg transition hover:scale-105 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-300 sm:left-3 sm:h-11 sm:w-11"
+                                onClick={goPrev}
+                                aria-label="Previous banner"
+                            >
                                 <ChevronLeft size={18} />
                             </button>
-                            <button type="button" className="popup-banner-nav next" onClick={goNext} aria-label="Next banner">
+                            <button
+                                type="button"
+                                className="absolute right-2 top-1/2 z-20 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-900 shadow-lg transition hover:scale-105 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-300 sm:right-3 sm:h-11 sm:w-11"
+                                onClick={goNext}
+                                aria-label="Next banner"
+                            >
                                 <ChevronRight size={18} />
                             </button>
-                            <div className="popup-banner-dots floating" role="tablist" aria-label="Popup banner list">
+                            <div
+                                className="absolute bottom-2 right-2 z-20 flex items-center gap-2 rounded-full border border-white/20 bg-slate-900/55 px-2 py-1.5 backdrop-blur sm:bottom-3 sm:right-3"
+                                role="tablist"
+                                aria-label="Popup banner list"
+                            >
                                 {banners.map((banner, idx) => (
                                     <button
                                         key={banner.id}
                                         type="button"
-                                        className={`popup-banner-dot${idx === currentIndex ? ' active' : ''}`}
+                                        className={`h-2.5 w-2.5 rounded-full transition ${
+                                            idx === currentIndex
+                                                ? 'scale-110 bg-orange-400'
+                                                : 'bg-slate-300/70 hover:bg-slate-100'
+                                        }`}
                                         onClick={() => setCurrentIndex(idx)}
                                         aria-label={`Show popup ${idx + 1}`}
                                     />

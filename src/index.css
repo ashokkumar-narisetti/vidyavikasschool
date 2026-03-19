@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ============================
    VIDYA VIKAS SCHOOL – GLOBAL CSS
    ============================ */
@@ -56,6 +60,7 @@ body {
   background: var(--white);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 img {
@@ -303,13 +308,34 @@ ul {
   height: 24px;
 }
 
-.logo-text span {
-  display: block;
-  font-size: 10px;
-  font-weight: 500;
-  color: #ffffff;
-  letter-spacing: 0.3px;
+.logo-text {
+  min-width: 0;
+}
+
+.logo-title {
+  font-family: "Black Ops One", cursive;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #fff;
+  text-transform: uppercase;
+  line-height: 1.1;
   white-space: nowrap;
+}
+
+.logo-subtitle {
+  display: block;
+  font-family: var(--font);
+  font-size: 10px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .navbar-menu {
@@ -725,6 +751,61 @@ ul {
   font-size: 15px;
   color: var(--text-mid);
   line-height: 1.9;
+}
+
+.principal-message-card {
+  position: relative;
+  border-top: 4px solid var(--primary);
+}
+
+.principal-message-layout {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.principal-message-profile {
+  flex: 0 0 190px;
+  text-align: center;
+}
+
+.principal-message-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: #fff;
+  font-weight: 700;
+  margin: 0 auto 12px;
+}
+
+.principal-message-name {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 15px;
+}
+
+.principal-message-role {
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.principal-message-content {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.principal-message-content .about-text {
+  margin-bottom: 16px;
+}
+
+.principal-message-content .about-text:last-child {
+  margin-bottom: 0;
 }
 
 .vision-mission-box {
@@ -2078,13 +2159,55 @@ ul {
     padding: 60px 0;
   }
 
+  .container {
+    padding: 0 14px;
+  }
+
   .navbar-menu,
   .nav-admit-btn {
     display: none;
   }
 
+  .navbar-inner {
+    height: 64px;
+    padding: 0 12px;
+    gap: 10px;
+  }
+
+  .navbar-logo {
+    flex: 1;
+    min-width: 0;
+    max-width: calc(100% - 48px);
+  }
+
+  .navbar-logo .logo-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+
+  .logo-title {
+    font-size: 18px;
+  }
+
+  .logo-subtitle {
+    display: none;
+  }
+
   .navbar-hamburger {
     display: flex;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+  }
+
+  .mobile-menu {
+    padding: 12px 14px 16px;
+    gap: 2px;
   }
 
   .hero-inner {
@@ -2152,6 +2275,21 @@ ul {
   .about-badge {
     bottom: -16px;
     right: 16px;
+  }
+
+  .principal-message-layout {
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .principal-message-profile {
+    flex: none;
+    width: 100%;
+  }
+
+  .principal-message-content {
+    width: 100%;
   }
 
   .academics-grid {
