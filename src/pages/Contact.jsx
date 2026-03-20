@@ -1,10 +1,20 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+﻿import { useState } from 'react';
 import { Clock, Mail, MapPin, Phone } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 const SCHOOL_ADDRESS_LINE_1 = 'Teachers Colony, Satyanarayanapuram,';
 const SCHOOL_ADDRESS_LINE_2 = 'Gudivada, Andhra Pradesh,521301,India';
 const SCHOOL_MAP_URL = 'https://www.google.com/maps/search/?api=1&query=Vidya+Vikas+School+Gudivada+Andhra+Pradesh';
+const SCHOOL_MAP_EMBED_URL = 'https://www.google.com/maps?q=Vidya+Vikas+School+Gudivada+Andhra+Pradesh&z=16&output=embed';
+
+const SUBJECT_OPTIONS = [
+    'Admission Enquiry',
+    'Fee Related Query',
+    'Academics Information',
+    'Events and Activities',
+    'Feedback / Suggestions',
+    'Other',
+];
 
 const contactInfo = [
     {
@@ -29,9 +39,80 @@ const contactInfo = [
     },
 ];
 
+const emptyForm = {
+    name: '',
+    phone: '',
+    email: '',
+    subject: '',
+    message: '',
+};
+
+const normalizePhone = (value) => value.replace(/[^0-9]/g, '');
+
 export default function Contact() {
-    const navigate = useNavigate();
     const [submitted, setSubmitted] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
+    const [formError, setFormError] = useState('');
+    const [form, setForm] = useState(emptyForm);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const resetForNewMessage = () => {
+        setSubmitted(false);
+        setFormError('');
+        setForm(emptyForm);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setFormError('');
+
+        const fullName = form.name.trim();
+        const phone = form.phone.trim();
+        const email = form.email.trim().toLowerCase();
+        const subject = form.subject.trim();
+        const message = form.message.trim();
+
+        if (!fullName || !phone || !email || !subject || !message) {
+            setFormError('Please fill in all required fields.');
+            return;
+        }
+
+        const digits = normalizePhone(phone);
+        if (digits.length < 10) {
+            setFormError('Please enter a valid phone number.');
+            return;
+        }
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+            setFormError('Please enter a valid email address.');
+            return;
+        }
+
+        setSubmitting(true);
+        const { error } = await supabase
+            .from('contact_messages')
+            .insert({
+                name: fullName,
+                phone,
+                email,
+                subject,
+                message,
+            });
+        setSubmitting(false);
+
+        if (error) {
+            setFormError('Failed to send your message. Please try again or contact the school office directly.');
+            return;
+        }
+
+        setForm(emptyForm);
+        setSubmitted(true);
+    };
 
     return (
         <div className="page-wrapper">
@@ -66,24 +147,27 @@ export default function Contact() {
                                 ))}
                             </div>
 
-                            <div className="map-placeholder" style={{ marginTop: 32 }}>
-                                <div className="map-icon">Map</div>
+                            <a
+                                className="map-placeholder"
+                                style={{ marginTop: 32 }}
+                                href={SCHOOL_MAP_URL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="Open map for Vidya Vikas School, Gudivada"
+                            >
+                                <iframe
+                                    title="Vidya Vikas School location map preview"
+                                    src={SCHOOL_MAP_EMBED_URL}
+                                    loading="lazy"
+                                    referrerPolicy="no-referrer-when-downgrade"
+                                />
+                                <span className="map-open-chip">Open in Maps</span>
+                            </a>
+                            <div className="map-caption" style={{ marginTop: 12 }}>
                                 <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--primary)' }}>Vidya Vikas School</div>
-                                <div style={{ fontSize: 13, color: 'var(--text-light)', textAlign: 'center', padding: '0 24px' }}>
-                                    {SCHOOL_ADDRESS_LINE_1}<br />{SCHOOL_ADDRESS_LINE_2}
+                                <div style={{ fontSize: 13, color: 'var(--text-light)' }}>
+                                    {SCHOOL_ADDRESS_LINE_1} {SCHOOL_ADDRESS_LINE_2}
                                 </div>
-                                <a
-                                    href={SCHOOL_MAP_URL}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    style={{
-                                        background: 'var(--primary)', color: 'white', padding: '10px 20px',
-                                        borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                                        textDecoration: 'none', marginTop: 8
-                                    }}
-                                >
-                                    Open in Google Maps
-                                </a>
                             </div>
                         </div>
 
@@ -99,45 +183,96 @@ export default function Contact() {
                                         <div style={{ fontSize: 48, marginBottom: 16 }}>Done</div>
                                         <h3 style={{ color: 'var(--primary)', marginBottom: 8 }}>Message Sent Successfully!</h3>
                                         <p style={{ color: 'var(--text-mid)', lineHeight: 1.8 }}>
-                                            Thank you for contacting us. Our team will respond to your message within 1-2 business days.
+                                            Thank you for contacting us. The admin team can now view your message in the dashboard.
                                         </p>
+                                        <button
+                                            type="button"
+                                            className="form-submit"
+                                            style={{ marginTop: 20 }}
+                                            onClick={resetForNewMessage}
+                                        >
+                                            Send Another Message
+                                        </button>
                                     </div>
                                 ) : (
-                                    <div className="contact-full-form">
+                                    <form className="contact-full-form" onSubmit={handleSubmit} noValidate>
+                                        {formError && (
+                                            <div style={{
+                                                background: '#fef2f2',
+                                                border: '1px solid #fecaca',
+                                                color: '#dc2626',
+                                                padding: '10px 14px',
+                                                borderRadius: 8,
+                                                fontSize: 14,
+                                            }}>
+                                                {formError}
+                                            </div>
+                                        )}
+
                                         <div className="form-row">
                                             <div className="form-group">
                                                 <label>Your Name *</label>
-                                                <input type="text" placeholder="Full Name" />
+                                                <input
+                                                    type="text"
+                                                    name="name"
+                                                    placeholder="Full Name"
+                                                    value={form.name}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
                                             </div>
                                             <div className="form-group">
                                                 <label>Phone Number *</label>
-                                                <input type="tel" placeholder="+91 XXXXX XXXXX" />
+                                                <input
+                                                    type="tel"
+                                                    name="phone"
+                                                    placeholder="+91 XXXXX XXXXX"
+                                                    value={form.phone}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
                                             </div>
                                         </div>
                                         <div className="form-group">
                                             <label>Email Address *</label>
-                                            <input type="email" placeholder="your@email.com" />
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                placeholder="your@email.com"
+                                                value={form.email}
+                                                onChange={handleChange}
+                                                required
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Subject *</label>
-                                            <select>
+                                            <select
+                                                name="subject"
+                                                value={form.subject}
+                                                onChange={handleChange}
+                                                required
+                                            >
                                                 <option value="">Select subject</option>
-                                                <option>Admission Enquiry</option>
-                                                <option>Fee Related Query</option>
-                                                <option>Academics Information</option>
-                                                <option>Events and Activities</option>
-                                                <option>Feedback / Suggestions</option>
-                                                <option>Other</option>
+                                                {SUBJECT_OPTIONS.map((option) => (
+                                                    <option key={option} value={option}>{option}</option>
+                                                ))}
                                             </select>
                                         </div>
                                         <div className="form-group">
                                             <label>Your Message *</label>
-                                            <textarea rows={5} placeholder="Please describe your query in detail..." />
+                                            <textarea
+                                                rows={5}
+                                                name="message"
+                                                placeholder="Please describe your query in detail..."
+                                                value={form.message}
+                                                onChange={handleChange}
+                                                required
+                                            />
                                         </div>
-                                        <button className="form-submit" onClick={() => setSubmitted(true)}>
-                                            Send Message
+                                        <button className="form-submit" type="submit" disabled={submitting}>
+                                            {submitting ? 'Sending...' : 'Send Message'}
                                         </button>
-                                    </div>
+                                    </form>
                                 )}
                             </div>
                         </div>
@@ -168,4 +303,3 @@ export default function Contact() {
         </div>
     );
 }
-

@@ -1,13 +1,14 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
-    LayoutDashboard, Users, Image, Trophy, LogOut, GraduationCap, Menu, X, Megaphone
+    LayoutDashboard, Users, Image, Trophy, LogOut, GraduationCap, Menu, X, Megaphone, MessageSquare
 } from 'lucide-react';
 import { useState } from 'react';
 
 const navItems = [
     { to: '/admin-dashboard', icon: <LayoutDashboard size={18} />, label: 'Overview', end: true },
     { to: '/admin-dashboard/applications', icon: <Users size={18} />, label: 'Applications' },
+    { to: '/admin-dashboard/messages', icon: <MessageSquare size={18} />, label: 'Messages' },
     { to: '/admin-dashboard/gallery', icon: <Image size={18} />, label: 'Gallery' },
     { to: '/admin-dashboard/achievements', icon: <Trophy size={18} />, label: 'Achievements' },
     { to: '/admin-dashboard/popup-banners', icon: <Megaphone size={18} />, label: 'Popup Banners' },

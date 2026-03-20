@@ -15,6 +15,7 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminOverview from './pages/admin/AdminOverview';
 import AdminApplications from './pages/admin/AdminApplications';
+import AdminMessages from './pages/admin/AdminMessages';
 import AdminGallery from './pages/admin/AdminGallery';
 import AdminAchievements from './pages/admin/AdminAchievements';
 import AdminPopupBanners from './pages/admin/AdminPopupBanners';
@@ -47,6 +48,7 @@ export default function App() {
           >
             <Route index element={<AdminOverview />} />
             <Route path="applications" element={<AdminApplications />} />
+            <Route path="messages" element={<AdminMessages />} />
             <Route path="gallery" element={<AdminGallery />} />
             <Route path="achievements" element={<AdminAchievements />} />
             <Route path="popup-banners" element={<AdminPopupBanners />} />

@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom';
-import { Facebook, GraduationCap, Instagram, Mail, MapPin, Phone, Twitter, Youtube, ChevronRight } from 'lucide-react';
+﻿import { useNavigate } from 'react-router-dom';
+import { Facebook, Instagram, Mail, MapPin, Phone, Twitter, Youtube, ChevronRight } from 'lucide-react';
 
 const SCHOOL_ADDRESS = 'Teachers Colony, Satyanarayanapuram, Gudivada, Andhra Pradesh,521301,India';
 const SCHOOL_MAP_URL = 'https://www.google.com/maps/search/?api=1&query=Vidya+Vikas+School+Gudivada+Andhra+Pradesh';
@@ -29,19 +29,34 @@ export default function Footer() {
                     <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
                             <div style={{
-                                width: 40, height: 40, background: 'rgba(255,255,255,0.15)',
-                                borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                width: 40,
+                                height: 40,
+                                background: 'rgba(255,255,255,0.15)',
+                                borderRadius: 10,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                overflow: 'hidden',
                             }}>
-                                <GraduationCap color="#fff" size={22} />
+                                <img
+                                    src="/vidyavikaslogo.jpeg"
+                                    alt="Vidya Vikas School Logo"
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                        borderRadius: '8px',
+                                    }}
+                                />
                             </div>
                             <div style={{
-                                fontFamily: '"Black Ops One", cursive',
+                                fontFamily: '"Bungee", "Black Ops One", cursive',
                                 fontSize: '22px',
                                 fontWeight: 400,
-                                letterSpacing: '1px',
+                                letterSpacing: '0.35px',
                                 color: 'white',
                                 textTransform: 'uppercase',
-                                lineHeight: 1.1,
+                                lineHeight: 1,
                             }}>VIDYAVIKAS</div>
                         </div>
                         <div className="footer-brand-tag">[E.M] Blooms, Primary &amp; High School - Gudivada</div>
@@ -101,7 +116,7 @@ export default function Footer() {
 
                 <div className="footer-bottom">
                     <p className="footer-copy">
-                        � 2025 Vidya Vikas Blooms School, Gudivada. All rights reserved. | Designed for educational excellence.
+                        © 2025 Vidya Vikas Blooms School, Gudivada. All rights reserved. | Designed for educational excellence.
                     </p>
                     <div className="demo-watermark">Demo Version</div>
                 </div>

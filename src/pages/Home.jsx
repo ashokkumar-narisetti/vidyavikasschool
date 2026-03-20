@@ -10,6 +10,7 @@ import {
 const SCHOOL_ADDRESS_LINE_1 = 'Teachers Colony, Satyanarayanapuram,';
 const SCHOOL_ADDRESS_LINE_2 = 'Gudivada, Andhra Pradesh,521301,India';
 const SCHOOL_MAP_URL = 'https://www.google.com/maps/search/?api=1&query=Vidya+Vikas+School+Gudivada+Andhra+Pradesh';
+const SCHOOL_MAP_EMBED_URL = 'https://www.google.com/maps?q=Vidya+Vikas+School+Gudivada+Andhra+Pradesh&z=16&output=embed';
 
 
 /* ── SVG Illustrations ── */
@@ -649,7 +650,7 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* ── TESTIMONIALS ──
+            ── TESTIMONIALS ──
             <section className="section section-bg">
                 <div className="container">
                     <div style={{ textAlign: 'center' }}>
@@ -676,7 +677,7 @@ export default function Home() {
                         ))}
                     </div>
                 </div>
-            </section> */}
+            </section>
 
             {/* ── CONTACT ── */}
             <section className="section">
@@ -720,24 +721,26 @@ export default function Home() {
 
                         {/* Right – Map Placeholder */}
                         <div className="contact-right">
-                            <div className="map-placeholder">
-                                <div className="map-icon">📍</div>
-                                <div style={{ fontWeight: 700, fontSize: 16, color: 'var(--primary)' }}>Vidya Vikas School</div>
-                                <div style={{ fontSize: 13, color: 'var(--text-light)', textAlign: 'center', padding: '0 24px' }}>
-                                    {SCHOOL_ADDRESS_LINE_1}<br />{SCHOOL_ADDRESS_LINE_2}
+                            <a
+                                className="map-placeholder"
+                                href={SCHOOL_MAP_URL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="Open map for Vidya Vikas School, Gudivada"
+                            >
+                                <iframe
+                                    title="Vidya Vikas School location map preview"
+                                    src={SCHOOL_MAP_EMBED_URL}
+                                    loading="lazy"
+                                    referrerPolicy="no-referrer-when-downgrade"
+                                />
+                                <span className="map-open-chip">Open in Maps</span>
+                            </a>
+                            <div className="map-caption" style={{ marginTop: 12 }}>
+                                <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--primary)' }}>Vidya Vikas School</div>
+                                <div style={{ fontSize: 13, color: 'var(--text-light)' }}>
+                                    {SCHOOL_ADDRESS_LINE_1} {SCHOOL_ADDRESS_LINE_2}
                                 </div>
-                                <a
-                                    href={SCHOOL_MAP_URL}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    style={{
-                                        background: 'var(--primary)', color: 'white', padding: '10px 20px',
-                                        borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                                        marginTop: 8, textDecoration: 'none'
-                                    }}
-                                >
-                                    Open in Google Maps
-                                </a>
                             </div>
                             <div style={{ marginTop: 28 }}>
                                 <button className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', marginBottom: 12 }} onClick={() => go('/contact')}>

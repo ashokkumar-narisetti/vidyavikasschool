@@ -152,13 +152,7 @@ export default function Achievements() {
                             </p>
                         </div>
                     ) : (
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 180px))',
-                            gap: 16,
-                            alignItems: 'start',
-                            justifyContent: 'center',
-                        }}>
+                        <div className="achievements-compact-grid">
                             {achievements.map((ach) => (
                                 <div key={ach.id} style={{
                                     background: '#fff', borderRadius: 'var(--radius-lg)',
