@@ -160,6 +160,14 @@ const admissionSteps = [
     { num: '04', title: 'Enrolment', desc: 'Complete documentation and fee payment to confirm your child\'s admission.' },
 ];
 
+const emptyAdmissionEnquiryForm = {
+    parent_name: '',
+    phone: '',
+    student_name: '',
+    class_applied: '',
+    message: '',
+};
+
 export default function Home() {
     const navigate = useNavigate();
     const [galleryImages, setGalleryImages] = useState([]);
@@ -167,10 +175,52 @@ export default function Home() {
     const [galleryError, setGalleryError] = useState('');
     const [currentSlide, setCurrentSlide] = useState(0);
     const [dismissedImageIds, setDismissedImageIds] = useState([]);
+    const [enquirySubmitted, setEnquirySubmitted] = useState(false);
+    const [enquiryForm, setEnquiryForm] = useState(emptyAdmissionEnquiryForm);
+    const [enquirySubmitting, setEnquirySubmitting] = useState(false);
+    const [enquiryError, setEnquiryError] = useState('');
 
     const go = (path) => {
         navigate(path);
         window.scrollTo(0, 0);
+    };
+
+    const handleEnquiryChange = (e) => {
+        const { name, value } = e.target;
+        setEnquiryForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleEnquirySubmit = async (e) => {
+        e.preventDefault();
+        setEnquiryError('');
+
+        if (
+            !enquiryForm.parent_name.trim() ||
+            !enquiryForm.phone.trim() ||
+            !enquiryForm.student_name.trim() ||
+            !enquiryForm.class_applied
+        ) {
+            setEnquiryError('Please fill in all required fields marked with *');
+            return;
+        }
+
+        setEnquirySubmitting(true);
+        const { error } = await supabase.from('applications').insert({
+            student_name: enquiryForm.student_name.trim(),
+            parent_name: enquiryForm.parent_name.trim(),
+            phone: enquiryForm.phone.trim(),
+            class_applied: enquiryForm.class_applied,
+            message: enquiryForm.message.trim() || null,
+        });
+        setEnquirySubmitting(false);
+
+        if (error) {
+            setEnquiryError('Failed to submit your enquiry. Please try again or call us directly.');
+            return;
+        }
+
+        setEnquiryForm(emptyAdmissionEnquiryForm);
+        setEnquirySubmitted(true);
     };
 
     useEffect(() => {
@@ -608,44 +658,103 @@ export default function Home() {
                         </div>
 
                         {/* Right – Form */}
-                        <div className="admission-form">
-                            <div className="form-title">Enquire Now</div>
-                            <p className="form-subtitle">Fill in the details and our admissions team will contact you within 24 hours.</p>
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label>Parent / Guardian Name *</label>
-                                    <input type="text" placeholder="Full Name" />
-                                </div>
-                                <div className="form-group">
-                                    <label>Phone Number *</label>
-                                    <input type="tel" placeholder="+91 XXXXX XXXXX" />
-                                </div>
+                        {enquirySubmitted ? (
+                            <div className="admission-form" style={{ textAlign: 'center' }}>
+                                <h3 style={{ color: 'var(--primary)', marginBottom: 8 }}>Enquiry Submitted Successfully!</h3>
+                                <p style={{ color: 'var(--text-mid)', lineHeight: 1.8 }}>
+                                    Thank you for your interest in Vidya Vikas School. Our admissions team will contact you within 24 hours.
+                                </p>
+                                <button className="btn btn-primary" style={{ marginTop: 22 }} onClick={() => setEnquirySubmitted(false)}>
+                                    Submit Another Enquiry
+                                </button>
                             </div>
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label>Student's Name *</label>
-                                    <input type="text" placeholder="Student's Full Name" />
+                        ) : (
+                            <form className="admission-form" onSubmit={handleEnquirySubmit} noValidate>
+                                <div className="form-title">Enquire Now</div>
+                                <p className="form-subtitle">Fill in the details and our admissions team will contact you within 24 hours.</p>
+
+                                {enquiryError && (
+                                    <div style={{
+                                        background: '#fef2f2',
+                                        border: '1px solid #fecaca',
+                                        color: '#dc2626',
+                                        padding: '10px 16px',
+                                        borderRadius: 8,
+                                        fontSize: 14,
+                                        marginBottom: 16,
+                                    }}>
+                                        {enquiryError}
+                                    </div>
+                                )}
+
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label>Parent / Guardian Name *</label>
+                                        <input
+                                            type="text"
+                                            name="parent_name"
+                                            placeholder="Full Name"
+                                            value={enquiryForm.parent_name}
+                                            onChange={handleEnquiryChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Phone Number *</label>
+                                        <input
+                                            type="tel"
+                                            name="phone"
+                                            placeholder="+91 XXXXX XXXXX"
+                                            value={enquiryForm.phone}
+                                            onChange={handleEnquiryChange}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label>Student's Name *</label>
+                                        <input
+                                            type="text"
+                                            name="student_name"
+                                            placeholder="Student's Full Name"
+                                            value={enquiryForm.student_name}
+                                            onChange={handleEnquiryChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Applying for Grade *</label>
+                                        <select
+                                            name="class_applied"
+                                            value={enquiryForm.class_applied}
+                                            onChange={handleEnquiryChange}
+                                            required
+                                        >
+                                            <option value="">Select Grade</option>
+                                            <option>Pre-KG / LKG / UKG</option>
+                                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((g) => <option key={g}>Class {g}</option>)}
+                                        </select>
+                                    </div>
                                 </div>
                                 <div className="form-group">
-                                    <label>Applying for Grade *</label>
-                                    <select>
-                                        <option value="">Select Grade</option>
-                                        <option>Pre-KG / LKG / UKG</option>
-                                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(g => <option key={g}>Class {g}</option>)}
-                                    </select>
+                                    <label>Message (Optional)</label>
+                                    <textarea
+                                        rows={3}
+                                        name="message"
+                                        placeholder="Any specific query or message..."
+                                        value={enquiryForm.message}
+                                        onChange={handleEnquiryChange}
+                                    />
                                 </div>
-                            </div>
-                            <div className="form-group">
-                                <label>Message (Optional)</label>
-                                <textarea rows={3} placeholder="Any specific query or message..." />
-                            </div>
-                            <button className="form-submit">
-                                Submit Enquiry 🎓
-                            </button>
-                            <p style={{ fontSize: 12, color: 'var(--text-light)', marginTop: 12, textAlign: 'center' }}>
-                                📞 Or call us directly: <strong>+91 98765 43210</strong>
-                            </p>
-                        </div>
+                                <button type="submit" className="form-submit" disabled={enquirySubmitting}>
+                                    {enquirySubmitting ? 'Submitting...' : 'Submit Enquiry'}
+                                </button>
+                                <p style={{ fontSize: 12, color: 'var(--text-light)', marginTop: 12, textAlign: 'center' }}>
+                                    Or call us directly: <strong>+91 7386640005</strong>
+                                </p>
+                            </form>
+                        )}
                     </div>
                 </div>
             </section>

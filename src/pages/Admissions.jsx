@@ -176,7 +176,7 @@ export default function Admissions() {
                             </ul>
                             <div style={{ marginTop: 24, background: 'var(--accent-light)', borderRadius: 10, padding: 16, fontSize: 14, color: 'var(--primary)', display: 'flex', gap: 10 }}>
                                 <span>📌</span>
-                                <span>All originals verified and returned. For queries, call: <strong>+91 98765 43210</strong></span>
+                                <span>All originals verified and returned. For queries, call: <strong>+91 7386640005</strong></span>
                             </div>
                         </div>
                     </div>
@@ -286,7 +286,7 @@ export default function Admissions() {
                                     {submitting ? 'Submitting...' : 'Submit Enquiry 🎓'}
                                 </button>
                                 <p style={{ fontSize: 12, color: 'var(--text-light)', marginTop: 12, textAlign: 'center' }}>
-                                    📞 Prefer to call? <strong>+91 98765 43210</strong> (Mon–Sat, 9 AM – 5 PM)
+                                    📞 Prefer to call? <strong>+91 7386640005</strong> (Mon–Sat, 9 AM – 5 PM)
                                 </p>
                             </form>
                         )}
