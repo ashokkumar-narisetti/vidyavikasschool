@@ -189,12 +189,12 @@ export default function HomePopupBannerModal() {
 
     return (
         <div
-            className="fixed inset-0 z-[1400] flex items-center justify-center overflow-y-auto overscroll-contain bg-slate-950/80 p-2 backdrop-blur-md sm:p-3 md:p-4"
+            className="fixed inset-0 z-[1400] flex items-center justify-center overflow-y-auto overscroll-contain bg-slate-900/25 p-2 backdrop-blur-xl sm:p-3 md:p-4"
             role="presentation"
             onClick={handleClose}
         >
             <div
-                className="relative h-[88vh] w-full max-w-[96vw] overflow-hidden rounded-2xl border border-white/20 bg-slate-950 shadow-[0_30px_90px_rgba(2,6,23,0.7)] sm:h-[90vh] sm:max-w-3xl md:h-[92vh] md:max-w-5xl lg:max-w-6xl xl:max-w-7xl"
+                className="relative w-full max-w-[96vw] overflow-hidden rounded-2xl border border-white/20 bg-slate-950/95 shadow-[0_30px_90px_rgba(2,6,23,0.45)] sm:h-[90vh] sm:max-w-3xl sm:bg-slate-950 md:h-[92vh] md:max-w-5xl lg:max-w-6xl xl:max-w-7xl"
                 role="dialog"
                 aria-modal="true"
                 aria-label={activeBanner.title || 'Achievement banner'}
@@ -209,11 +209,11 @@ export default function HomePopupBannerModal() {
                     <X size={18} />
                 </button>
 
-                <div className="relative h-full w-full overflow-hidden bg-slate-950">
+                <div className="relative w-full overflow-hidden bg-transparent sm:h-full sm:bg-slate-950">
                     {hasRedirect ? (
                         <button
                             type="button"
-                            className="block h-full w-full"
+                            className="block w-full sm:h-full"
                             onClick={openRedirect}
                             aria-label="Open banner details"
                         >
@@ -221,7 +221,7 @@ export default function HomePopupBannerModal() {
                                 src={activeBanner.image_url}
                                 alt={activeBanner.title || 'Popup banner'}
                                 loading="lazy"
-                                className="h-full w-full object-contain sm:object-cover"
+                                className="w-full h-auto object-contain sm:h-full sm:object-cover"
                             />
                         </button>
                     ) : (
@@ -229,7 +229,7 @@ export default function HomePopupBannerModal() {
                             src={activeBanner.image_url}
                             alt={activeBanner.title || 'Popup banner'}
                             loading="lazy"
-                            className="h-full w-full object-contain sm:object-cover"
+                            className="w-full h-auto object-contain sm:h-full sm:object-cover"
                         />
                     )}
 
