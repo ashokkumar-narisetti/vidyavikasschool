@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Trophy, Medal, Star, Award } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -18,7 +17,6 @@ const banners = [
 ];
 
 export default function Achievements() {
-    const navigate = useNavigate();
     const [achievements, setAchievements] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -156,8 +154,10 @@ export default function Achievements() {
                     ) : (
                         <div style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                            gap: 24,
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 180px))',
+                            gap: 16,
+                            alignItems: 'start',
+                            justifyContent: 'center',
                         }}>
                             {achievements.map((ach) => (
                                 <div key={ach.id} style={{
@@ -165,45 +165,63 @@ export default function Achievements() {
                                     boxShadow: 'var(--shadow)', overflow: 'hidden',
                                     border: '1px solid var(--border)',
                                     transition: 'var(--transition)',
+                                    width: '100%',
                                 }}
-                                    onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-4px)'}
+                                    onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-3px)'}
                                     onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
                                 >
                                     {/* Photo */}
                                     <div style={{
-                                        height: 160, background: 'var(--accent-light)',
+                                        background: 'var(--accent-light)',
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                         overflow: 'hidden',
+                                        height: 170,
+                                        padding: 8,
                                     }}>
                                         {ach.image_url ? (
                                             <img
                                                 src={ach.image_url}
                                                 alt={ach.student_name}
-                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                style={{
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    objectFit: 'contain',
+                                                    borderRadius: 8,
+                                                    background: '#fff',
+                                                }}
                                                 onError={e => {
                                                     e.target.style.display = 'none';
-                                                    e.target.parentElement.innerHTML = '<span style="font-size:64px">🎓</span>';
+                                                    e.target.parentElement.textContent = 'Image unavailable';
                                                 }}
                                             />
                                         ) : (
-                                            <span style={{ fontSize: 64 }}>🎓</span>
+                                            <span style={{ color: 'var(--text-light)', fontWeight: 600 }}>No Photo</span>
                                         )}
                                     </div>
                                     {/* Info */}
-                                    <div style={{ padding: '20px 22px' }}>
+                                    <div style={{ padding: '12px 12px 14px' }}>
                                         <div style={{
                                             display: 'inline-block', background: 'var(--accent-light)',
-                                            color: 'var(--accent)', fontSize: 11, fontWeight: 700,
-                                            padding: '3px 10px', borderRadius: 50, marginBottom: 10,
+                                            color: 'var(--accent)', fontSize: 10, fontWeight: 700,
+                                            padding: '2px 8px', borderRadius: 50, marginBottom: 8,
                                         }}>{ach.year}</div>
-                                        <div style={{ fontSize: 17, fontWeight: 800, color: 'var(--text-dark)', marginBottom: 4 }}>
+                                        <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-dark)', marginBottom: 3 }}>
                                             {ach.student_name}
                                         </div>
-                                        <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--primary)', marginBottom: 8 }}>
+                                        <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--primary)', marginBottom: 5 }}>
                                             {ach.title}
                                         </div>
                                         {ach.description && (
-                                            <p style={{ fontSize: 13, color: 'var(--text-light)', lineHeight: 1.7, margin: 0 }}>
+                                            <p style={{
+                                                fontSize: 12,
+                                                color: 'var(--text-light)',
+                                                lineHeight: 1.45,
+                                                margin: 0,
+                                                display: '-webkit-box',
+                                                WebkitLineClamp: 2,
+                                                WebkitBoxOrient: 'vertical',
+                                                overflow: 'hidden',
+                                            }}>
                                                 {ach.description}
                                             </p>
                                         )}

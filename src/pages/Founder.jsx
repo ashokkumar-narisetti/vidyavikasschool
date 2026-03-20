@@ -17,7 +17,7 @@ const timeline = [
 ];
 
 export default function Founder() {
-    const [imgSrc, setImgSrc] = useState('/founder.png');
+    const [imgSrc, setImgSrc] = useState('/founder.jpeg');
 
     return (
         <div className="page-wrapper">
