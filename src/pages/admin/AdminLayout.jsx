@@ -1,7 +1,7 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
-    LayoutDashboard, Users, Image, Trophy, LogOut, GraduationCap, Menu, X, Megaphone, MessageSquare
+    LayoutDashboard, Users, Image, Trophy, LogOut, Menu, X, Megaphone, MessageSquare
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
@@ -83,7 +83,16 @@ export default function AdminLayout() {
             <aside className={`admin-sidebar${sidebarOpen ? ' open' : ''}`}>
                 <div className="admin-sidebar-logo">
                     <div className="admin-sidebar-logo-icon">
-                        <GraduationCap size={22} color="#fff" />
+                        <img
+                            src="/vidyavikaslogo.jpeg"
+                            alt="Vidya Vikas School Logo"
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                                borderRadius: '8px',
+                            }}
+                        />
                     </div>
                     <div>
                         <div className="admin-sidebar-school">Vidya Vikas</div>
