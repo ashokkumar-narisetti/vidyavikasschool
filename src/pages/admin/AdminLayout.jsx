@@ -3,7 +3,8 @@ import { useAuth } from '../../context/AuthContext';
 import {
     LayoutDashboard, Users, Image, Trophy, LogOut, GraduationCap, Menu, X, Megaphone, MessageSquare
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { supabase } from '../../lib/supabase';
 
 const navItems = [
     { to: '/admin-dashboard', icon: <LayoutDashboard size={18} />, label: 'Overview', end: true },
@@ -18,6 +19,58 @@ export default function AdminLayout() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [newApplicationsCount, setNewApplicationsCount] = useState(0);
+    const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
+
+    const refreshNavCounts = async () => {
+        const [applicationsResult, messagesResult] = await Promise.all([
+            supabase
+                .from('applications')
+                .select('id', { head: true, count: 'exact' })
+                .or('status.eq.New,status.is.null'),
+            supabase
+                .from('contact_messages')
+                .select('id', { head: true, count: 'exact' })
+                .or('is_read.eq.false,is_read.is.null'),
+        ]);
+
+        if (!applicationsResult.error) {
+            setNewApplicationsCount(applicationsResult.count ?? 0);
+        }
+
+        if (!messagesResult.error) {
+            setUnreadMessagesCount(messagesResult.count ?? 0);
+        }
+    };
+
+    useEffect(() => {
+        refreshNavCounts();
+
+        const handleDataChanged = () => {
+            refreshNavCounts();
+        };
+
+        window.addEventListener('admin-data-changed', handleDataChanged);
+
+        const countsChannel = supabase
+            .channel('admin-layout-counts')
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'applications' },
+                () => refreshNavCounts(),
+            )
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'contact_messages' },
+                () => refreshNavCounts(),
+            )
+            .subscribe();
+
+        return () => {
+            window.removeEventListener('admin-data-changed', handleDataChanged);
+            supabase.removeChannel(countsChannel);
+        };
+    }, []);
 
     const handleLogout = async () => {
         await logout();
@@ -39,20 +92,31 @@ export default function AdminLayout() {
                 </div>
 
                 <nav className="admin-sidebar-nav">
-                    {navItems.map(item => (
-                        <NavLink
-                            key={item.to}
-                            to={item.to}
-                            end={item.end}
-                            className={({ isActive }) =>
-                                `admin-nav-item${isActive ? ' active' : ''}`
-                            }
-                            onClick={() => setSidebarOpen(false)}
-                        >
-                            {item.icon}
-                            <span>{item.label}</span>
-                        </NavLink>
-                    ))}
+                    {navItems.map(item => {
+                        const badgeCount = item.label === 'Applications'
+                            ? newApplicationsCount
+                            : item.label === 'Messages'
+                                ? unreadMessagesCount
+                                : 0;
+
+                        return (
+                            <NavLink
+                                key={item.to}
+                                to={item.to}
+                                end={item.end}
+                                className={({ isActive }) =>
+                                    `admin-nav-item${isActive ? ' active' : ''}`
+                                }
+                                onClick={() => setSidebarOpen(false)}
+                            >
+                                {item.icon}
+                                <span>{item.label}</span>
+                                {badgeCount > 0 ? (
+                                    <span className="admin-badge admin-nav-count-badge">{badgeCount}</span>
+                                ) : null}
+                            </NavLink>
+                        );
+                    })}
                 </nav>
 
                 <button className="admin-sidebar-logout" onClick={handleLogout}>

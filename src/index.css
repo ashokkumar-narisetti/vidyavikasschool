@@ -2791,6 +2791,16 @@ ul {
   font-weight: 700;
 }
 
+.admin-nav-count-badge {
+  margin-left: auto;
+  min-width: 22px;
+  text-align: center;
+  padding: 2px 8px;
+  background: rgba(59, 130, 246, 0.25);
+  color: #dbeafe;
+  border: 1px solid rgba(147, 197, 253, 0.45);
+}
+
 .admin-sidebar-logout {
   display: flex;
   align-items: center;
@@ -3289,6 +3299,19 @@ ul {
   font-weight: 700;
   padding: 3px 10px;
   border-radius: 50px;
+}
+
+.admin-unread-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+  background: #2563eb;
+}
+
+.admin-replied-badge {
+  background: #dcfce7;
+  color: #166534;
 }
 
 /* ── Table ── */

@@ -65,6 +65,7 @@ export default function Admissions() {
             phone: form.phone.trim(),
             class_applied: form.class_applied,
             message: form.message.trim() || null,
+            status: 'New',
         });
         setSubmitting(false);
 

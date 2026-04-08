@@ -102,6 +102,8 @@ export default function Contact() {
                 email,
                 subject,
                 message,
+                is_read: false,
+                is_replied: false,
             });
         setSubmitting(false);
 

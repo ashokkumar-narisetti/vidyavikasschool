@@ -1,5 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from 'react';
-import { Eye, Search, Trash2, X } from 'lucide-react';
+import { Download, Eye, Reply, Search, Trash2, X } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 const formatDate = (value) => new Date(value).toLocaleDateString('en-IN', {
@@ -10,6 +10,28 @@ const formatDate = (value) => new Date(value).toLocaleDateString('en-IN', {
 
 const formatDateTime = (value) => new Date(value).toLocaleString('en-IN');
 
+const csvCell = (value) => `"${String(value ?? '').replace(/"/g, '""')}"`;
+
+const downloadCsv = (fileName, headers, rows) => {
+    const csv = [
+        headers.map(csvCell).join(','),
+        ...rows.map((row) => row.map(csvCell).join(',')),
+    ].join('\n');
+
+    const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+};
+
+const isMessageRead = (item) => Boolean(item?.is_read);
+const isMessageReplied = (item) => Boolean(item?.is_replied);
+
 export default function AdminMessages() {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -18,6 +40,7 @@ export default function AdminMessages() {
     const [query, setQuery] = useState('');
     const [subjectFilter, setSubjectFilter] = useState('all');
     const [error, setError] = useState('');
+    const [markingReplied, setMarkingReplied] = useState(false);
 
     useEffect(() => {
         fetchMessages();
@@ -45,6 +68,7 @@ export default function AdminMessages() {
     const handleDelete = async (id) => {
         if (!window.confirm('Delete this message? This cannot be undone.')) return;
         setDeleting(id);
+        setError('');
 
         const { error: deleteError } = await supabase.from('contact_messages').delete().eq('id', id);
         if (deleteError) {
@@ -56,6 +80,56 @@ export default function AdminMessages() {
         setMessages((prev) => prev.filter((item) => item.id !== id));
         if (selected?.id === id) setSelected(null);
         setDeleting(null);
+        window.dispatchEvent(new Event('admin-data-changed'));
+    };
+
+    const updateMessageInState = (id, patch) => {
+        setMessages((prev) => prev.map((item) => (
+            item.id === id ? { ...item, ...patch } : item
+        )));
+        setSelected((prev) => (
+            prev?.id === id ? { ...prev, ...patch } : prev
+        ));
+    };
+
+    const handleOpenDetails = async (item) => {
+        setSelected(item);
+
+        if (isMessageRead(item)) return;
+
+        const { error: updateError } = await supabase
+            .from('contact_messages')
+            .update({ is_read: true })
+            .eq('id', item.id);
+
+        if (updateError) {
+            setError('Unable to mark this message as read right now.');
+            return;
+        }
+
+        updateMessageInState(item.id, { is_read: true });
+        window.dispatchEvent(new Event('admin-data-changed'));
+    };
+
+    const handleMarkAsReplied = async () => {
+        if (!selected || isMessageReplied(selected)) return;
+        setMarkingReplied(true);
+        setError('');
+
+        const { error: updateError } = await supabase
+            .from('contact_messages')
+            .update({ is_replied: true })
+            .eq('id', selected.id);
+
+        if (updateError) {
+            setError('Unable to mark this message as replied right now.');
+            setMarkingReplied(false);
+            return;
+        }
+
+        updateMessageInState(selected.id, { is_replied: true });
+        setMarkingReplied(false);
+        window.dispatchEvent(new Event('admin-data-changed'));
     };
 
     const subjectOptions = useMemo(() => {
@@ -104,6 +178,26 @@ export default function AdminMessages() {
             week,
         };
     }, [messages]);
+
+    const handleExport = () => {
+        const rows = filteredMessages.map((item, i) => [
+            i + 1,
+            item.name || item.full_name || '',
+            item.phone || '',
+            item.email || '',
+            item.subject || 'General',
+            item.message || '',
+            formatDate(item.created_at),
+            isMessageRead(item) ? 'Read' : 'Unread',
+            isMessageReplied(item) ? 'Yes' : 'No',
+        ]);
+
+        downloadCsv(
+            `messages-export-${new Date().toISOString().slice(0, 10)}.csv`,
+            ['#', 'Name', 'Phone Number', 'Email', 'Subject', 'Message', 'Date', 'Status (Read/Unread)', 'Replied'],
+            rows,
+        );
+    };
 
     return (
         <div className="admin-applications-shell">
@@ -167,6 +261,9 @@ export default function AdminMessages() {
                 <div className="admin-card-header admin-app-list-header">
                     <h3>Messages List</h3>
                     <div className="admin-app-list-meta">
+                        <button className="admin-btn-secondary" onClick={handleExport}>
+                            <Download size={14} /> Export CSV
+                        </button>
                         <span className="admin-badge">{filteredMessages.length} shown</span>
                         {filteredMessages.length !== messages.length ? (
                             <span className="admin-app-list-muted">of {messages.length} total</span>
@@ -184,6 +281,7 @@ export default function AdminMessages() {
                             <table className="admin-table">
                                 <thead>
                                     <tr>
+                                        <th />
                                         <th>#</th>
                                         <th>Name</th>
                                         <th>Phone</th>
@@ -194,70 +292,100 @@ export default function AdminMessages() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredMessages.map((item, i) => (
-                                        <tr key={item.id}>
-                                            <td style={{ color: '#94a3b8', fontSize: 13 }}>{i + 1}</td>
-                                            <td><strong>{item.name || item.full_name || '-'}</strong></td>
-                                            <td>{item.phone}</td>
-                                            <td>{item.email}</td>
-                                            <td><span className="admin-badge">{item.subject || 'General'}</span></td>
-                                            <td>{formatDate(item.created_at)}</td>
-                                            <td>
-                                                <div className="admin-app-row-actions">
-                                                    <button
-                                                        className="admin-icon-btn view"
-                                                        onClick={() => setSelected(item)}
-                                                        title="View Details"
-                                                    >
-                                                        <Eye size={15} />
-                                                    </button>
-                                                    <button
-                                                        className="admin-icon-btn delete"
-                                                        onClick={() => handleDelete(item.id)}
-                                                        disabled={deleting === item.id}
-                                                        title="Delete"
-                                                    >
-                                                        <Trash2 size={15} />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                    {filteredMessages.map((item, i) => {
+                                        const unread = !isMessageRead(item);
+                                        const replied = isMessageReplied(item);
+                                        const rowTextStyle = { fontWeight: unread ? 700 : 400 };
+
+                                        return (
+                                            <tr key={item.id}>
+                                                <td style={{ width: 26 }}>
+                                                    {unread ? <span className="admin-unread-dot" title="Unread" /> : null}
+                                                </td>
+                                                <td style={{ color: '#94a3b8', fontSize: 13 }}>{i + 1}</td>
+                                                <td style={rowTextStyle}>{item.name || item.full_name || '-'}</td>
+                                                <td style={rowTextStyle}>{item.phone}</td>
+                                                <td style={rowTextStyle}>{item.email}</td>
+                                                <td style={rowTextStyle}>
+                                                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                                                        <span className="admin-badge">{item.subject || 'General'}</span>
+                                                        {replied ? (
+                                                            <span className="admin-badge admin-replied-badge">Replied</span>
+                                                        ) : null}
+                                                    </div>
+                                                </td>
+                                                <td style={rowTextStyle}>{formatDate(item.created_at)}</td>
+                                                <td>
+                                                    <div className="admin-app-row-actions">
+                                                        <button
+                                                            className="admin-icon-btn view"
+                                                            onClick={() => handleOpenDetails(item)}
+                                                            title="View Details"
+                                                        >
+                                                            <Eye size={15} />
+                                                        </button>
+                                                        <button
+                                                            className="admin-icon-btn delete"
+                                                            onClick={() => handleDelete(item.id)}
+                                                            disabled={deleting === item.id}
+                                                            title="Delete"
+                                                        >
+                                                            <Trash2 size={15} />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>
 
                         <div className="admin-app-mobile-list">
-                            {filteredMessages.map((item) => (
-                                <article key={item.id} className="admin-app-mobile-card">
-                                    <div className="admin-app-mobile-top">
-                                        <div>
-                                            <div className="admin-app-mobile-name">{item.name || item.full_name || '-'}</div>
-                                            <div className="admin-app-mobile-parent">{item.email}</div>
+                            {filteredMessages.map((item) => {
+                                const unread = !isMessageRead(item);
+                                const replied = isMessageReplied(item);
+                                const rowTextStyle = { fontWeight: unread ? 700 : 400 };
+
+                                return (
+                                    <article key={item.id} className="admin-app-mobile-card">
+                                        <div className="admin-app-mobile-top">
+                                            <div>
+                                                <div className="admin-app-mobile-name" style={{ ...rowTextStyle, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                                                    {unread ? <span className="admin-unread-dot" title="Unread" /> : null}
+                                                    <span>{item.name || item.full_name || '-'}</span>
+                                                </div>
+                                                <div className="admin-app-mobile-parent" style={rowTextStyle}>{item.email}</div>
+                                            </div>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                                                <span className="admin-badge">{item.subject || 'General'}</span>
+                                                {replied ? (
+                                                    <span className="admin-badge admin-replied-badge">Replied</span>
+                                                ) : null}
+                                            </div>
                                         </div>
-                                        <span className="admin-badge">{item.subject || 'General'}</span>
-                                    </div>
-                                    <div className="admin-app-mobile-meta">{item.phone}</div>
-                                    <div className="admin-app-mobile-meta">{formatDate(item.created_at)}</div>
-                                    <div className="admin-app-mobile-actions">
-                                        <button
-                                            className="admin-icon-btn view"
-                                            onClick={() => setSelected(item)}
-                                            title="View Details"
-                                        >
-                                            <Eye size={15} />
-                                        </button>
-                                        <button
-                                            className="admin-icon-btn delete"
-                                            onClick={() => handleDelete(item.id)}
-                                            disabled={deleting === item.id}
-                                            title="Delete"
-                                        >
-                                            <Trash2 size={15} />
-                                        </button>
-                                    </div>
-                                </article>
-                            ))}
+                                        <div className="admin-app-mobile-meta" style={rowTextStyle}>{item.phone}</div>
+                                        <div className="admin-app-mobile-meta" style={rowTextStyle}>{formatDate(item.created_at)}</div>
+                                        <div className="admin-app-mobile-actions">
+                                            <button
+                                                className="admin-icon-btn view"
+                                                onClick={() => handleOpenDetails(item)}
+                                                title="View Details"
+                                            >
+                                                <Eye size={15} />
+                                            </button>
+                                            <button
+                                                className="admin-icon-btn delete"
+                                                onClick={() => handleDelete(item.id)}
+                                                disabled={deleting === item.id}
+                                                title="Delete"
+                                            >
+                                                <Trash2 size={15} />
+                                            </button>
+                                        </div>
+                                    </article>
+                                );
+                            })}
                         </div>
                     </>
                 )}
@@ -290,6 +418,14 @@ export default function AdminMessages() {
                                 <span className="admin-detail-value">{selected.subject || 'General'}</span>
                             </div>
                             <div className="admin-detail-row">
+                                <span className="admin-detail-label">Status</span>
+                                <span className="admin-detail-value">{isMessageRead(selected) ? 'Read' : 'Unread'}</span>
+                            </div>
+                            <div className="admin-detail-row">
+                                <span className="admin-detail-label">Replied</span>
+                                <span className="admin-detail-value">{isMessageReplied(selected) ? 'Yes' : 'No'}</span>
+                            </div>
+                            <div className="admin-detail-row">
                                 <span className="admin-detail-label">Message</span>
                                 <span className="admin-detail-value" style={{ whiteSpace: 'pre-wrap' }}>
                                     {selected.message || '-'}
@@ -303,6 +439,13 @@ export default function AdminMessages() {
                         <div className="admin-modal-footer">
                             <button className="admin-btn-danger" onClick={() => handleDelete(selected.id)}>
                                 <Trash2 size={14} /> Delete Message
+                            </button>
+                            <button
+                                className="admin-btn-primary"
+                                onClick={handleMarkAsReplied}
+                                disabled={markingReplied || isMessageReplied(selected)}
+                            >
+                                <Reply size={14} /> {isMessageReplied(selected) ? 'Marked Replied' : (markingReplied ? 'Marking...' : 'Mark as Replied')}
                             </button>
                             <button className="admin-btn-secondary" onClick={() => setSelected(null)}>
                                 Close

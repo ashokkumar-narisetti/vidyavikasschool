@@ -211,6 +211,7 @@ export default function Home() {
             phone: enquiryForm.phone.trim(),
             class_applied: enquiryForm.class_applied,
             message: enquiryForm.message.trim() || null,
+            status: 'New',
         });
         setEnquirySubmitting(false);
 
